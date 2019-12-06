@@ -8,6 +8,7 @@ nStates = trellis.numStates;
 
 % 前向递推计算alpha
 lastState = 1;
+alpha = 
 for k=2:N+1
     last
     for state = 1:nStates
