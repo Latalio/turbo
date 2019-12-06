@@ -12,11 +12,11 @@ bFbConn = fliplr(dec2binvec(fbConn,nCons));
 
 % ×´Ì¬×ªÒÆ
 nextStates = zeros(nStates,2);
-outputs = zeros(size(nextStates));
+outputs = zeros(nStates,4);
 for s=1:nStates
     sBinvec = dec2binvec(s-1,nStateBits);
     dk = 0;
-    ak = mod(dk + bFbConn(1:nStateBits)*sBinvec',2);
+    ak = mod(dk + bFbConn(1:nStateBits)*sBinvec.',2);
     [out1,nextState1] = enc(codeGenBitVec,ak,sBinvec);
     
     dk = 1;
@@ -29,7 +29,7 @@ end
 
 % last
 lastStates = zeros(nStates,2);
-lastOutputs = zeros(nStates,2);
+lastOutputs = zeros(nStates,4);
 for s=1:nStates
     for dk=0:1
         lastStates(nextStates(s,dk+1)+1, dk+1) = s-1;
@@ -48,7 +48,7 @@ end
 function [output, nextState] = enc(codeGenBitVec,ak,stateBinvec)
 nStateBits = length(stateBinvec);
 regs = [stateBinvec,ak];
-output = binvec2dec(fliplr(mod(codeGenBitVec*regs',2)'));
+output = mod(codeGenBitVec*regs',2)';
 nextState = binvec2dec((regs(end-nStateBits+1:end)));
 end
 
