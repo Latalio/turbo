@@ -32,8 +32,8 @@ lastStates = zeros(nStates,2);
 lastOutputs = zeros(nStates,4);
 for s=1:nStates
     for dk=0:1
-        lastStates(nextStates(s,dk+1)+1, dk+1) = s-1;
-        lastOutputs(nextStates(s,dk+1)+1, dk+1) = outputs(s,dk+1);
+        lastStates(nextStates(s,dk+1), dk+1) = s;
+        lastOutputs(nextStates(s,dk+1), dk+1) = outputs(s,dk+1);
     end
 end
 trellis.numStates = nStates;
@@ -49,7 +49,7 @@ function [output, nextState] = enc(codeGenBitVec,ak,stateBinvec)
 nStateBits = length(stateBinvec);
 regs = [stateBinvec,ak];
 output = mod(codeGenBitVec*regs',2)';
-nextState = binvec2dec((regs(end-nStateBits+1:end)));
+nextState = binvec2dec((regs(end-nStateBits+1:end)))+1;
 end
 
 

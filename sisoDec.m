@@ -7,21 +7,25 @@ blkLen = length(Lu_in);
 nStates = trellis.numStates;
 lastStates = trellis.lastStates;
 lastOutputs = trellis.lastOutputs;
+nextOutputs = trellis.outputs;
+nextStates = trellis.nextStates;
 %----------------
+pN = 2;
 lcD = reshape(Lc_in, pN, blkLen);
+
 
 A(1,1) = 0;
 A(1,2:nStates) = -Infty*ones(1, nStates-1);
 
 B(blkLen, 1) = 0;
-B(blkLen, 1:nStates) = -Infty*ones(1, nStates-1);
+B(blkLen, 2:nStates) = -Infty*ones(1, nStates-1);
 
 % 前向递推计算alpha 
 for k=2:blkLen+1
     for s = 1:nStates
         M = -Infty*ones(1,nStates);
-        M(lastStates(s,dk+1)) = (-lcD(1,k-1)+lcD(2,k-1)*lastOutputs(s,2)) - log(1+exp(Lu_in(k-1)));
-        M(lastStates(s,dk+1)) = ( lcD(1,k-1)+lcD(2,k-1)*lastOutputs(s,4)) - log(1+exp(Lu_in(k-1)))+Lu_in(k-1);
+        M(lastStates(s,1)) = (-lcD(1,k-1)+lcD(2,k-1)*lastOutputs(s,2)) - log(1+exp(Lu_in(k-1)));
+        M(lastStates(s,2)) = ( lcD(1,k-1)+lcD(2,k-1)*lastOutputs(s,4)) - log(1+exp(Lu_in(k-1)))+Lu_in(k-1);
         
       if(sum(exp(M+A(k-1,:))) < 1e-300)
           A(k,s) = -Infty;
@@ -61,7 +65,8 @@ for k=1:blkLen
     end
     L_all(k) = log(sum(tmp2)) - log(sum(tmp1));
 end
-        
+ 
+Lu_out = L_all';
         
         
         
